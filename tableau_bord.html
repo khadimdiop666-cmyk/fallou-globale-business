@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administration - FALLOU GOLOBALE BUSNESS</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .zone-graphique {
+            background: white;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .zone-graphique h2 {
+            margin-bottom: 20px;
+            color: #171717;
+        }
+
+        .graphique-conteneur {
+            position: relative;
+            width: 100%;
+            height: 350px;
+        }
+
+        .statistique p {
+            font-size: 25px;
+            font-weight: bold;
+            color: #d6b77a;
+        }
+
+        .alertes-stock {
+            background: #fff3cd;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+
+        .alertes-stock h2 {
+            color: #171717;
+        }
+
+        .alerte-faible {
+            color: #a66a00;
+            font-weight: bold;
+        }
+
+        .alerte-epuise {
+            color: red;
+            font-weight: bold;
+        }
+
+        .carte img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            margin: 10px 0 20px;
+            padding: 10px;
+        }
+
+        .zone-nouveaute,
+        .zone-promotion {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .zone-nouveaute {
+            background: #fff8e8;
+            border: 1px solid #d6b77a;
+        }
+
+        .zone-promotion {
+            background: #fff0f0;
+            border: 1px solid #e57373;
+        }
+
+        .zone-nouveaute input,
+        .zone-promotion input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .zone-nouveaute input {
+            accent-color: #d6ad60;
+        }
+
+        .zone-promotion input {
+            accent-color: #d32f2f;
+        }
+
+        .zone-nouveaute label,
+        .zone-promotion label {
+            font-weight: bold;
+            color: #171717;
+            cursor: pointer;
+        }
+
+        .badge-admin-nouveaute {
+            display: inline-block;
+            background: #d6ad60;
+            color: #171717;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .badge-admin-promotion {
+            display: inline-block;
+            background: #d32f2f;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .ancien-prix-admin {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .nouveau-prix-admin {
+            color: #d32f2f;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .texte-aide {
+            color: #666;
+            font-size: 13px;
+            margin: 5px 0 12px;
+        }
+
+        @media(max-width: 600px) {
+            .graphique-conteneur {
+                height: 260px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="menu-lateral">
+    <h2>FALLOU BUSINESS</h2>
+
+    <a href="{{ url_for('tableau_bord') }}">🏠 Tableau de bord</a>
+    <a href="{{ url_for('commandes') }}">🧾 Historique des commandes</a>
+    <a href="#statistiques">📊 Statistiques</a>
+    <a href="#graphique">📈 Graphique des ventes</a>
+    <a href="#alertes">⚠️ Alertes de stock</a>
+    <a href="#ajout">➕ Ajouter un produit</a>
+    <a href="#produits">📦 Mes produits</a>
+    <a href="{{ url_for('accueil') }}">🌐 Voir la boutique</a>
+    <a href="{{ url_for('deconnexion') }}">🚪 Déconnexion</a>
+</nav>
+
+<div class="contenu">
+
+    <header>
+        <h1>FALLOU GOLOBALE BUSNESS</h1>
+        <p>ESPACE ADMINISTRATEUR</p>
+    </header>
+
+    <div class="bienvenue">
+        <h2>Bienvenue dans votre administration 👋</h2>
+        <p>Gérez votre boutique et vos stocks facilement.</p>
+    </div>
+
+    {% set stats = namespace(disponibles=0, epuises=0) %}
+
+    {% for produit in produits %}
+        {% if produit["quantite"] and produit["quantite"] > 0 %}
+            {% set stats.disponibles = stats.disponibles + 1 %}
+        {% else %}
+            {% set stats.epuises = stats.epuises + 1 %}
+        {% endif %}
+    {% endfor %}
+
+    <!-- STATISTIQUES -->
+    <div class="statistiques" id="statistiques">
+
+        <div class="statistique">
+            <h3>📦 Total des produits</h3>
+            <p>{{ total_produits }}</p>
+        </div>
+
+        <div class="statistique">
+            <h3>📦 Stock total</h3>
+            <p>{{ total_stock }}</p>
+        </div>
+
+        <div class="statistique">
+            <h3>✅ Produits disponibles</h3>
+            <p>{{ stats.disponibles }}</p>
+        </div>
+
+        <div class="statistique">
+            <h3>⚠️ Produits épuisés</h3>
+            <p>{{ stats.epuises }}</p>
+        </div>
+
+        <div class="statistique">
+            <h3>🧾 Total des commandes</h3>
+            <p>{{ total_commandes }}</p>
+        </div>
+
+        <div class="statistique">
+            <h3>💰 Chiffre d'affaires</h3>
+            <p>{{ "{:,.0f}".format(chiffre_affaires) }} FCFA</p>
+        </div>
+
+        <div class="statistique">
+            <h3>🛍️ Articles vendus</h3>
+            <p>{{ nombre_articles_vendus }}</p>
+        </div>
+
+    </div>
+
+    <!-- ALERTES DE STOCK -->
+    <section class="alertes-stock" id="alertes">
+
+        <h2>⚠️ Alertes de stock</h2>
+
+        {% if produits_stock_faible %}
+
+            <h3>Produits avec moins de 5 articles :</h3>
+
+            {% for produit in produits_stock_faible %}
+                <p class="alerte-faible">
+                    ⚠️ {{ produit["nom"] }} :
+                    {{ produit["quantite"] }} article(s) restant(s)
+                </p>
+            {% endfor %}
+
+        {% else %}
+
+            <p>✅ Aucun produit avec un stock faible.</p>
+
+        {% endif %}
+
+        {% if produits_epuises %}
+
+            <h3 style="color:red;">Produits épuisés :</h3>
+
+            {% for produit in produits_epuises %}
+                <p class="alerte-epuise">
+                    ❌ {{ produit["nom"] }} : stock épuisé
+                </p>
+            {% endfor %}
+
+        {% endif %}
+
+    </section>
+
+    <!-- GRAPHIQUE DES VENTES -->
+    <section class="zone-graphique" id="graphique">
+
+        <h2>📈 Évolution des ventes</h2>
+
+        <p>Chiffre d'affaires des 7 derniers jours enregistrés.</p>
+
+        <div class="graphique-conteneur">
+            <canvas id="graphiqueVentes"></canvas>
+        </div>
+
+        {% if not stats_ventes %}
+            <p>Aucune vente enregistrée pour le moment.</p>
+        {% endif %}
+
+    </section>
+
+    <!-- AJOUTER UN PRODUIT -->
+    <section id="ajout">
+
+        <h2>➕ Ajouter un produit</h2>
+
+        <form action="{{ url_for('ajouter_produit') }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <label>Nom du produit</label>
+            <input type="text" name="nom" required>
+
+            <label>Catégorie</label>
+
+            <select name="categorie" required>
+                <option value="garcons">Garçons</option>
+                <option value="filles">Filles</option>
+                <option value="chaussures">Chaussures</option>
+            </select>
+
+            <label>Prix normal en FCFA</label>
+            <input type="number" name="prix" min="1" required>
+
+            <label>🔥 Prix promotionnel en FCFA</label>
+            <input type="number"
+                   name="prix_promo"
+                   min="0"
+                   value="0">
+
+            <p class="texte-aide">
+                Mets 0 si le produit n'est pas en promotion.
+                Le prix promotionnel doit être inférieur au prix normal.
+            </p>
+
+            <label>Choisir une photo depuis votre ordinateur</label>
+            <input type="file"
+                   name="image"
+                   accept="image/png,image/jpeg,image/gif,image/webp">
+
+            <label>Quantité en stock</label>
+            <input type="number" name="quantite" min="0" value="1" required>
+
+            <div class="zone-nouveaute">
+                <input type="checkbox"
+                       id="nouveaute-ajout"
+                       name="nouveaute"
+                       value="1">
+
+                <label for="nouveaute-ajout">
+                    ✨ Marquer ce produit comme NOUVEAUTÉ
+                </label>
+            </div>
+
+            <button type="submit">Ajouter le produit</button>
+
+        </form>
+
+    </section>
+
+    <!-- GESTION DES PRODUITS -->
+    <section id="produits">
+
+        <h2>📦 Gestion de mes produits</h2>
+
+        <div class="grille-produits">
+
+            {% for produit in produits %}
+
+            <div class="carte">
+
+                {% if produit["image"] %}
+                    <img
+                        src="{{ url_for('static', filename='images/' + produit['image']) }}"
+                        alt="{{ produit['nom'] }}">
+                {% endif %}
+
+                <h3>{{ produit["nom"] }}</h3>
+
+                {% if produit["nouveaute"] %}
+                    <span class="badge-admin-nouveaute">✨ NOUVEAUTÉ</span>
+                {% endif %}
+
+                {% if produit["prix_promo"] and produit["prix_promo"]|int > 0 and produit["prix_promo"]|int < produit["prix"]|int %}
+                    <span class="badge-admin-promotion">🔥 PROMOTION</span>
+                    <p class="ancien-prix-admin">
+                        Ancien prix : {{ produit["prix"] }} FCFA
+                    </p>
+                    <p class="nouveau-prix-admin">
+                        Prix promo : {{ produit["prix_promo"] }} FCFA
+                    </p>
+                {% else %}
+                    <p>Prix : {{ produit["prix"] }} FCFA</p>
+                {% endif %}
+
+                <p>Catégorie : {{ produit["categorie"] }}</p>
+                <p>Quantité : {{ produit["quantite"] or 0 }}</p>
+
+                {% if produit["quantite"] and produit["quantite"] > 0 %}
+                    <p style="color:green;font-weight:bold;">DISPONIBLE</p>
+                {% else %}
+                    <p style="color:red;font-weight:bold;">ÉPUISÉ</p>
+                {% endif %}
+
+                <hr>
+
+                <h3>Modifier le produit</h3>
+
+                <form action="{{ url_for('modifier_produit', id=produit['id']) }}"
+                      method="POST"
+                      enctype="multipart/form-data">
+
+                    <label>Nom</label>
+                    <input type="text"
+                           name="nom"
+                           value="{{ produit['nom'] }}"
+                           required>
+
+                    <label>Catégorie</label>
+
+                    <select name="categorie" required>
+
+                        <option value="garcons"
+                        {% if produit['categorie'] == 'garcons' %}selected{% endif %}>
+                            Garçons
+                        </option>
+
+                        <option value="filles"
+                        {% if produit['categorie'] == 'filles' %}selected{% endif %}>
+                            Filles
+                        </option>
+
+                        <option value="chaussures"
+                        {% if produit['categorie'] == 'chaussures' %}selected{% endif %}>
+                            Chaussures
+                        </option>
+
+                    </select>
+
+                    <label>Prix normal en FCFA</label>
+                    <input type="number"
+                           name="prix"
+                           value="{{ produit['prix'] }}"
+                           min="1"
+                           required>
+
+                    <label>🔥 Prix promotionnel en FCFA</label>
+                    <input type="number"
+                           name="prix_promo"
+                           value="{{ produit['prix_promo'] or 0 }}"
+                           min="0">
+
+                    <p class="texte-aide">
+                        Mets 0 pour supprimer la promotion.
+                    </p>
+
+                    <label>Changer la photo</label>
+                    <input type="file"
+                           name="image"
+                           accept="image/png,image/jpeg,image/gif,image/webp">
+
+                    <p>Si tu ne choisis pas de nouvelle photo, l'ancienne sera conservée.</p>
+
+                    <label>Quantité</label>
+                    <input type="number"
+                           name="quantite"
+                           value="{{ produit['quantite'] or 0 }}"
+                           min="0"
+                           required>
+
+                    <div class="zone-nouveaute">
+                        <input type="checkbox"
+                               id="nouveaute-{{ produit['id'] }}"
+                               name="nouveaute"
+                               value="1"
+                               {% if produit["nouveaute"] %}checked{% endif %}>
+
+                        <label for="nouveaute-{{ produit['id'] }}">
+                            ✨ Marquer ce produit comme NOUVEAUTÉ
+                        </label>
+                    </div>
+
+                    <button type="submit">
+                        Enregistrer les modifications
+                    </button>
+
+                </form>
+
+                <form action="{{ url_for('supprimer_produit', id=produit['id']) }}"
+                      method="POST"
+                      onsubmit="return confirm('Voulez-vous vraiment supprimer ce produit ?');">
+
+                    <button type="submit">🗑 Supprimer</button>
+
+                </form>
+
+            </div>
+
+            {% else %}
+
+                <p>Aucun produit enregistré.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <footer>
+        FALLOU GOLOBALE BUSNESS © 2026
+    </footer>
+
+</div>
+
+<script id="donnees-ventes" type="application/json">{{ (stats_ventes or []) | tojson }}</script>
+
+<script>
+    let ventes = [];
+    const donneesVentesElement = document.getElementById("donnees-ventes");
+
+    if (donneesVentesElement && donneesVentesElement.textContent) {
+        try {
+            ventes = JSON.parse(donneesVentesElement.textContent) || [];
+        } catch (e) {
+            ventes = [];
+        }
+    }
+
+    const etiquettes = ventes.map(vente => vente.jour);
+    const montants = ventes.map(vente => vente.total);
+
+    const zoneGraphique = document.getElementById("graphiqueVentes");
+
+    if (zoneGraphique && typeof Chart !== "undefined") {
+
+        new Chart(zoneGraphique, {
+
+            type: "bar",
+
+            data: {
+                labels: etiquettes,
+
+                datasets: [{
+                    label: "Ventes en FCFA",
+                    data: montants,
+                    backgroundColor: "#d6b77a",
+                    borderColor: "#171717",
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Montant en FCFA"
+                        }
+                    },
+
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Jour"
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+
+        });
+
+    }
+</script>
+
+</body>
+</html>

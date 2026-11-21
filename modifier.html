@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un produit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>FALLOU GOLOBALE BUSNESS</h1>
+    <p>MODIFICATION DU PRODUIT</p>
+</header>
+
+<section>
+    <h2>Modifier : {{ produit["nom"] }}</h2>
+
+    <form method="POST">
+
+        <label>Nom du produit</label>
+        <input type="text" name="nom"
+               value="{{ produit['nom'] }}" required>
+
+        <label>Catégorie</label>
+        <select name="categorie" required>
+            <option value="garcons"
+                {% if produit["categorie"] == "garcons" %}selected{% endif %}>
+                Garçons
+            </option>
+
+            <option value="filles"
+                {% if produit["categorie"] == "filles" %}selected{% endif %}>
+                Filles
+            </option>
+
+            <option value="chaussures"
+                {% if produit["categorie"] == "chaussures" %}selected{% endif %}>
+                Chaussures
+            </option>
+        </select>
+
+        <label>Prix en FCFA</label>
+        <input type="number" name="prix"
+               value="{{ produit['prix'] }}" min="0" required>
+
+        <label>Nom de la photo</label>
+        <input type="text" name="image"
+               value="{{ produit['image'] or '' }}">
+
+        <label>Quantité en stock</label>
+        <input type="number" name="quantite"
+               value="{{ produit['quantite'] if produit['quantite'] is not none else 0 }}"
+               min="0" required>
+
+        <button type="submit">Enregistrer les modifications</button>
+
+    </form>
+
+    <a href="{{ url_for('tableau_bord') }}">Retour au tableau de bord</a>
+</section>
+
+</body>
+</html>

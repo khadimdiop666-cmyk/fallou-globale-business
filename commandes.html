@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des commandes - FALLOU GOLOBALE BUSNESS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .zone-commandes {
+            padding: 25px;
+            overflow-x: auto;
+        }
+
+        .table-commandes {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        .table-commandes th,
+        .table-commandes td {
+            padding: 14px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .table-commandes th {
+            background: #171717;
+            color: #d6b77a;
+        }
+
+        .article-commande {
+            margin-bottom: 8px;
+        }
+
+        .total-commande {
+            color: #16803c;
+            font-weight: bold;
+        }
+
+        .retour {
+            display: inline-block;
+            margin: 20px;
+            padding: 12px 18px;
+            background: #171717;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    
+@media print {
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .retour {
+        display: none !important;
+    }
+
+    .zone-commandes {
+        padding: 0 !important;
+    }
+
+    .table-commandes {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .table-commandes th {
+        background: #eeeeee !important;
+        color: black !important;
+    }
+
+    h1 {
+        text-align: center;
+    }
+}
+</style>
+</head>
+<body>
+
+    <div class="contenu zone-commandes">
+
+        <h1>🧾 Historique des commandes</h1>
+
+        <p>Voici les commandes enregistrées dans votre boutique.</p>
+
+        <a class="retour" href="{{ url_for('tableau_bord') }}">
+            ← Retour au tableau de bord
+        </a>
+
+        {% if commandes %}
+
+        <table class="table-commandes">
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Client</th>
+                    <th>Téléphone</th>
+                    <th>Adresse</th>
+                    <th>Produits commandés</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for commande in commandes %}
+                <tr>
+                    <td>{{ commande["id"] }}</td>
+                    <td>{{ commande["nom_client"] }}</td>
+                    <td>{{ commande["telephone"] }}</td>
+                    <td>{{ commande["adresse"] }}</td>
+
+                    <td>
+                        {% for article in commande["articles"] %}
+                        <div class="article-commande">
+                            {{ article["nom"] }}
+                            × {{ article["quantite"] }}
+                            ({{ article["prix"] }} FCFA)
+                        </div>
+                        {% endfor %}
+                    </td>
+
+                    <td class="total-commande">
+                        {{ commande["total"] }} FCFA
+                    </td>
+
+                    <td>{{ commande["date_commande"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+
+        <h2>Aucune commande enregistrée pour le moment.</h2>
+
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

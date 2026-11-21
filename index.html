@@ -1,0 +1,883 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FALLOU GOLOBALE BUSNESS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .navigation {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+        }
+
+        .nav-bouton {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 130px;
+            padding: 14px 22px;
+            background: #151515;
+            color: #d6ad60;
+            border: 2px solid #d6ad60;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-bouton:hover {
+            background: #d6ad60;
+            color: #151515;
+            transform: translateY(-3px);
+        }
+
+        .bouton-admin {
+            background: #d6ad60;
+            color: black;
+        }
+
+        .bouton-admin:hover {
+            background: #ffffff;
+            color: black;
+        }
+
+        .accueil {
+            text-align: center;
+            padding: 50px 15px;
+            background: #eee6d8;
+        }
+
+        .recherche {
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        .recherche input {
+            width: 80%;
+            max-width: 500px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .section-produits {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .grille-produits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .carte-produit {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000015;
+            position: relative;
+        }
+
+        .badge-nouveaute {
+            display: inline-block;
+            background: #d6ad60;
+            color: #151515;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .badge-promotion {
+            display: inline-block;
+            background: #d62828;
+            color: white;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .carte-produit img {
+            width: 100%;
+            max-width: 180px;
+            height: 150px;
+            object-fit: contain;
+            display: block;
+            margin: auto;
+            border-radius: 8px;
+            cursor: zoom-in;
+        }
+
+        .prix {
+            color: #b58a3a;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .ancien-prix {
+            color: #888;
+            font-size: 16px;
+            text-decoration: line-through;
+            margin: 8px 0 3px;
+        }
+
+        .prix-promotion {
+            color: #d62828;
+            font-size: 23px;
+            font-weight: bold;
+            margin: 5px 0 12px;
+        }
+
+        .bouton-whatsapp {
+            display: inline-block;
+            background: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .bouton-panier {
+            display: block;
+            width: 100%;
+            background: #171717;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .bouton-panier:hover {
+            background: #b58a3a;
+            color: black;
+        }
+
+        #panier {
+            background: white;
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000015;
+        }
+
+        .ligne-panier {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .commandes-quantite {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .commandes-quantite button {
+            border: none;
+            background: #333;
+            color: white;
+            padding: 7px 11px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .bouton-supprimer {
+            background: #c62828 !important;
+        }
+
+        .bouton-commander {
+            width: 100%;
+            padding: 15px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #total {
+            font-size: 22px;
+            font-weight: bold;
+            color: #b58a3a;
+        }
+
+        footer {
+            background: #171717;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+        #fenetre-photo {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #fenetre-photo img {
+            max-width: 90%;
+            max-height: 75vh;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        #fermer-photo {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 35px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        #details-photo {
+            position: absolute;
+            bottom: 25px;
+            color: white;
+            text-align: center;
+            width: 90%;
+        }
+
+        @media(max-width: 600px) {
+            .ligne-panier {
+                flex-wrap: wrap;
+            }
+
+            .nav-bouton {
+                min-width: 110px;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header id="accueil">
+
+    <div class="logo-boutique">
+        <h1>FALLOU <span>GOLOBALE</span></h1>
+        <p>BUSNESS • MODE & STYLE</p>
+    </div>
+
+    <nav class="navigation">
+        <a href="#accueil" class="nav-bouton">Accueil</a>
+        <a href="#garcons" class="nav-bouton">Garçons</a>
+        <a href="#filles" class="nav-bouton">Filles</a>
+        <a href="#chaussures" class="nav-bouton">Chaussures</a>
+        <a href="{{ url_for('admin') }}" class="nav-bouton bouton-admin">Administration</a>
+        <a href="#panier" class="nav-bouton">🛒 Panier (<span id="nombre-panier">0</span>)</a>
+    </nav>
+
+</header>
+
+<section class="accueil">
+    <h2>Bienvenue chez FALLOU GOLOBALE BUSNESS</h2>
+    <p>Découvrez notre collection de vêtements et chaussures.</p>
+</section>
+
+<section class="recherche">
+    <h2>Rechercher un produit</h2>
+
+    <input
+        type="text"
+        id="rechercheProduit"
+        placeholder="🔍 Rechercher un vêtement ou une chaussure..."
+        oninput="rechercherProduit()"
+    >
+
+    <p id="aucun-resultat" style="display:none;color:red;">
+        Aucun produit trouvé.
+    </p>
+</section>
+
+{% for categorie, titre in [
+    ('garcons', 'Mode Garçons'),
+    ('filles', 'Mode Filles'),
+    ('chaussures', 'Nos Chaussures')
+] %}
+
+<section class="section-produits" id="{{ categorie }}">
+
+    <h2>{{ titre }}</h2>
+
+    <div class="grille-produits">
+
+        {% for produit in produits if produit['categorie'] == categorie %}
+
+        {% set prix_normal = produit['prix']|int %}
+        {% set prix_promo = produit['prix_promo']|int if produit['prix_promo'] else 0 %}
+        {% set en_promotion = prix_promo > 0 and prix_promo < prix_normal %}
+        {% set prix_final = prix_promo if en_promotion else prix_normal %}
+
+        <div class="carte-produit"
+             data-recherche="{{ (produit['nom'] ~ ' ' ~ titre)|lower }}">
+
+            {% if produit['nouveaute'] %}
+                <span class="badge-nouveaute">✨ NOUVEAUTÉ</span>
+            {% endif %}
+
+            {% if en_promotion %}
+                <span class="badge-promotion">🔥 PROMOTION</span>
+            {% endif %}
+
+            <img
+                src="{{ url_for('static', filename='images/' ~ (produit['image'] or 'pulls.jpg')) }}"
+                alt="{{ produit['nom'] }}"
+                data-nom="{{ produit['nom'] }}"
+                data-prix="{{ '{:,.0f}'.format(prix_final) }} FCFA"
+                data-statut="{{ produit['statut'] }}"
+                data-fallback-src="{{ url_for('static', filename='images/pulls.jpg') }}"
+                onclick="agrandirDepuisImage(this)"
+                onerror="gererErreurImage(this)"
+            >
+
+            <h3>{{ produit['nom'] }}</h3>
+
+            {% if en_promotion %}
+
+                <p class="ancien-prix">
+                    {{ "{:,.0f}".format(prix_normal) }} FCFA
+                </p>
+
+                <p class="prix-promotion">
+                    {{ "{:,.0f}".format(prix_promo) }} FCFA
+                </p>
+
+            {% else %}
+
+                <p class="prix">
+                    {{ "{:,.0f}".format(prix_normal) }} FCFA
+                </p>
+
+            {% endif %}
+
+            {% if produit['statut']|lower|trim == 'disponible' and produit['quantite']|int > 0 %}
+
+                <p style="color:green;font-weight:bold;background:#e5f7e9;padding:8px;border-radius:6px;">
+                    ✓ DISPONIBLE
+                </p>
+
+                <label for="quantite-{{ produit['id'] }}">Quantité :</label>
+
+                <input
+                    type="number"
+                    id="quantite-{{ produit['id'] }}"
+                    value="1"
+                    min="1"
+                    max="{{ produit['quantite'] }}"
+                    style="width:70px;padding:8px;margin:8px;"
+                >
+
+                <button
+                    type="button"
+                    class="bouton-panier"
+                    data-id="{{ produit['id']|int }}"
+                    data-nom="{{ produit['nom'] }}"
+                    data-prix="{{ prix_final }}"
+                    data-stock="{{ produit['quantite']|int }}"
+                    onclick="ajouterDepuisBouton(this)"
+                >
+                    🛒 Ajouter au panier
+                </button>
+
+            {% else %}
+
+                <p style="color:red;font-weight:bold;background:#ffe5e5;padding:8px;border-radius:6px;">
+                    ✕ ÉPUISÉ
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        {% else %}
+
+            <p>Aucun produit disponible dans cette catégorie.</p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endfor %}
+
+<div id="fenetre-photo" onclick="fermerPhoto()">
+
+    <button id="fermer-photo" type="button" onclick="fermerPhoto()">✕</button>
+
+    <img id="photo-agrandie" src="" alt="Photo du produit" onclick="event.stopPropagation()">
+
+    <div id="details-photo" onclick="event.stopPropagation()"></div>
+
+</div>
+
+<section id="panier">
+
+    <h2>🛒 Mon panier</h2>
+
+    <div id="contenu-panier">
+        <p>Votre panier est vide.</p>
+    </div>
+
+    <p>Total : <span id="total">0 FCFA</span></p>
+
+    <h3>Informations du client</h3>
+
+    <input
+        type="text"
+        id="nomClient"
+        placeholder="Votre nom complet"
+        required
+        style="width:100%;padding:12px;margin:8px 0;"
+    >
+
+    <input
+        type="tel"
+        id="telephoneClient"
+        placeholder="Votre numéro de téléphone"
+        required
+        style="width:100%;padding:12px;margin:8px 0;"
+    >
+
+    <textarea
+        id="adresseClient"
+        placeholder="Votre adresse de livraison"
+        required
+        style="width:100%;padding:12px;margin:8px 0;"
+    ></textarea>
+
+    <button
+        type="button"
+        class="bouton-commander"
+        onclick="commanderWhatsApp()"
+    >
+        📲 Envoyer ma commande sur WhatsApp
+    </button>
+
+</section>
+
+<footer>
+    <h3>FALLOU GOLOBALE BUSNESS</h3>
+    <p>Mode, vêtements et chaussures</p>
+    <p>WhatsApp : +221 76 336 81 72</p>
+    <p>© 2026 - Tous droits réservés</p>
+</footer>
+
+<script>
+
+    const numeroWhatsApp = "221763368172";
+
+    let panier = [];
+
+    try {
+        panier = JSON.parse(localStorage.getItem("panierFallou")) || [];
+
+        if (!Array.isArray(panier)) {
+            panier = [];
+        }
+
+    } catch (erreur) {
+        panier = [];
+    }
+
+    function sauvegarderPanier() {
+        localStorage.setItem("panierFallou", JSON.stringify(panier));
+    }
+
+    function gererErreurImage(image) {
+        if (!image.dataset.fallback && image.dataset.fallbackSrc) {
+            image.dataset.fallback = "1";
+            image.src = image.dataset.fallbackSrc;
+        } else {
+            image.style.display = "none";
+        }
+    }
+
+    function agrandirDepuisImage(image) {
+        const nom = image.dataset.nom || "";
+        const prix = image.dataset.prix || "";
+        const statut = image.dataset.statut || "";
+        agrandirPhoto(image, nom, prix, statut);
+    }
+
+    function agrandirPhoto(image, nom, prix, statut) {
+
+        const fenetre = document.getElementById("fenetre-photo");
+
+        document.getElementById("photo-agrandie").src = image.src;
+
+        document.getElementById("details-photo").innerHTML =
+            "<h2>" + echapperHTML(nom) + "</h2>" +
+            "<p>" + echapperHTML(prix) + "</p>" +
+            "<p>" + echapperHTML(statut) + "</p>";
+
+        fenetre.style.display = "flex";
+    }
+
+    function fermerPhoto() {
+        document.getElementById("fenetre-photo").style.display = "none";
+        document.getElementById("photo-agrandie").src = "";
+    }
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            fermerPhoto();
+        }
+    });
+
+    function ajouterDepuisBouton(bouton) {
+
+        const id = Number(bouton.dataset.id);
+        const nom = bouton.dataset.nom || "";
+        const prix = Number(bouton.dataset.prix);
+        const stock = Number(bouton.dataset.stock);
+
+        const champQuantite = document.getElementById("quantite-" + id);
+
+        if (!champQuantite) {
+            return;
+        }
+
+        const quantite = Number(champQuantite.value);
+
+        const article = panier.find(p => Number(p.id) === id);
+        const quantiteDejaAuPanier = article ? Number(article.quantite) : 0;
+
+        if (!Number.isInteger(quantite) || quantite < 1) {
+            alert("Veuillez choisir une quantité valide.");
+            return;
+        }
+
+        if (quantiteDejaAuPanier + quantite > stock) {
+            alert("Stock insuffisant ! Quantité disponible : " + stock);
+            return;
+        }
+
+        ajouterAuPanier(id, nom, prix, quantite);
+        champQuantite.value = 1;
+    }
+
+    function ajouterAuPanier(id, nom, prix, quantiteChoisie) {
+
+        let article = panier.find(p => Number(p.id) === Number(id));
+
+        if (article) {
+            article.quantite += Number(quantiteChoisie);
+            article.prix = Number(prix);
+        } else {
+            panier.push({
+                id: Number(id),
+                nom: nom,
+                prix: Number(prix),
+                quantite: Number(quantiteChoisie)
+            });
+        }
+
+        sauvegarderPanier();
+        afficherPanier();
+
+        alert(nom + " ajouté au panier !");
+    }
+
+    function afficherPanier() {
+
+        const contenu = document.getElementById("contenu-panier");
+        const totalElement = document.getElementById("total");
+
+        if (!contenu || !totalElement) {
+            return;
+        }
+
+        contenu.innerHTML = "";
+
+        let total = 0;
+        let nombre = 0;
+
+        if (panier.length === 0) {
+            contenu.innerHTML = "<p>Votre panier est vide.</p>";
+        }
+
+        panier.forEach((article, index) => {
+
+            let prix = Number(article.prix) || 0;
+            let quantiteArticle = Number(article.quantite) || 1;
+            let sousTotal = prix * quantiteArticle;
+
+            total += sousTotal;
+            nombre += quantiteArticle;
+
+            const ligne = document.createElement("div");
+            ligne.className = "ligne-panier";
+
+            const details = document.createElement("div");
+
+            details.innerHTML =
+                "<strong>" + echapperHTML(article.nom) + "</strong><br>" +
+                prix.toLocaleString("fr-FR") + " FCFA l'unité";
+
+            const controles = document.createElement("div");
+            controles.className = "commandes-quantite";
+
+            const moins = document.createElement("button");
+            moins.textContent = "−";
+            moins.type = "button";
+            moins.onclick = () => changerQuantite(index, -1);
+
+            const quantite = document.createElement("strong");
+            quantite.textContent = quantiteArticle;
+
+            const plus = document.createElement("button");
+            plus.textContent = "+";
+            plus.type = "button";
+            plus.onclick = () => changerQuantite(index, 1);
+
+            const supprimer = document.createElement("button");
+            supprimer.textContent = "Supprimer";
+            supprimer.type = "button";
+            supprimer.className = "bouton-supprimer";
+            supprimer.onclick = () => supprimerArticle(index);
+
+            const sousTotalTexte = document.createElement("span");
+
+            sousTotalTexte.textContent =
+                sousTotal.toLocaleString("fr-FR") + " FCFA";
+
+            controles.append(moins, quantite, plus, supprimer);
+            ligne.append(details, controles, sousTotalTexte);
+
+            contenu.appendChild(ligne);
+        });
+
+        totalElement.textContent =
+            total.toLocaleString("fr-FR") + " FCFA";
+
+        document.getElementById("nombre-panier").textContent = nombre;
+    }
+
+    function changerQuantite(index, variation) {
+
+        if (!panier[index]) {
+            return;
+        }
+
+        const id = Number(panier[index].id);
+
+        if (variation > 0) {
+
+            const bouton = document.querySelector(
+                '.bouton-panier[data-id="' + id + '"]'
+            );
+
+            if (bouton) {
+
+                const stock = Number(bouton.dataset.stock);
+
+                if (panier[index].quantite + 1 > stock) {
+                    alert("Stock insuffisant !");
+                    return;
+                }
+            }
+        }
+
+        panier[index].quantite += variation;
+
+        if (panier[index].quantite <= 0) {
+            panier.splice(index, 1);
+        }
+
+        sauvegarderPanier();
+        afficherPanier();
+    }
+
+    function supprimerArticle(index) {
+        panier.splice(index, 1);
+        sauvegarderPanier();
+        afficherPanier();
+    }
+
+    function echapperHTML(texte) {
+        const element = document.createElement("div");
+        element.textContent = texte;
+        return element.innerHTML;
+    }
+
+    async function commanderWhatsApp() {
+
+        if (panier.length === 0) {
+            alert("Votre panier est vide !");
+            return;
+        }
+
+        const nom = document.getElementById("nomClient").value.trim();
+        const telephone = document.getElementById("telephoneClient").value.trim();
+        const adresse = document.getElementById("adresseClient").value.trim();
+
+        if (!nom || !telephone || !adresse) {
+            alert("Veuillez remplir toutes les informations du formulaire.");
+            return;
+        }
+
+        const fenetre = window.open("about:blank", "_blank");
+
+        try {
+
+            const reponse = await fetch("/valider-commande", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    client: {
+                        nom: nom,
+                        telephone: telephone,
+                        adresse: adresse
+                    },
+
+                    articles: panier.map(article => ({
+                        id: article.id,
+                        quantite: article.quantite
+                    }))
+
+                })
+
+            });
+
+            const resultat = await reponse.json();
+
+            if (!reponse.ok || !resultat.succes) {
+
+                if (fenetre) {
+                    fenetre.close();
+                }
+
+                alert(resultat.message || "Impossible de valider la commande.");
+                return;
+            }
+
+            let message = "Bonjour FALLOU GOLOBALE BUSNESS !\n\n";
+
+            message += "INFORMATIONS DU CLIENT\n";
+            message += "Nom : " + nom + "\n";
+            message += "Téléphone : " + telephone + "\n";
+            message += "Adresse : " + adresse + "\n\n";
+
+            message += "COMMANDE :\n";
+
+            resultat.articles.forEach(article => {
+
+                const sousTotal = article.prix * article.quantite;
+
+                message += "- " + article.nom +
+                    " | Quantité : " + article.quantite +
+                    " | Prix : " + sousTotal.toLocaleString("fr-FR") +
+                    " FCFA\n";
+
+                if (article.prix_normal && article.prix < article.prix_normal) {
+                    message += "  🔥 Promotion : ancien prix " +
+                        article.prix_normal.toLocaleString("fr-FR") +
+                        " FCFA\n";
+                }
+
+            });
+
+            const total = Number(resultat.total);
+
+            message += "\nTOTAL : " + total.toLocaleString("fr-FR") + " FCFA";
+
+            const url = "https://wa.me/" + numeroWhatsApp +
+                "?text=" + encodeURIComponent(message);
+
+            panier = [];
+
+            sauvegarderPanier();
+            afficherPanier();
+
+            if (fenetre) {
+                fenetre.location.href = url;
+            } else {
+                window.location.href = url;
+            }
+
+        } catch (erreur) {
+
+            if (fenetre) {
+                fenetre.close();
+            }
+
+            alert("Erreur de connexion au serveur. Réessayez.");
+
+        }
+    }
+
+    function rechercherProduit() {
+
+        const recherche = document
+            .getElementById("rechercheProduit")
+            .value.toLowerCase().trim();
+
+        const cartes = document.querySelectorAll(".carte-produit");
+
+        let nombreTrouve = 0;
+
+        cartes.forEach(carte => {
+
+            const texte = carte.dataset.recherche;
+
+            if (texte.includes(recherche)) {
+                carte.style.display = "";
+                nombreTrouve++;
+            } else {
+                carte.style.display = "none";
+            }
+
+        });
+
+        document.getElementById("aucun-resultat").style.display =
+            nombreTrouve === 0 ? "block" : "none";
+    }
+
+    afficherPanier();
+
+</script>
+
+</body>
+</html>

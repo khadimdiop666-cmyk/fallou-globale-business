@@ -1,0 +1,853 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
+    color: #222;
+}
+
+/* EN-TETE */
+header {
+    background: #151515;
+    color: white;
+    padding: 28px;
+    text-align: center;
+    border-bottom: 4px solid #d6ad60;
+}
+
+header h1 {
+    color: #d6ad60;
+    font-size: 27px;
+    letter-spacing: 2px;
+}
+
+header p {
+    margin-top: 10px;
+    color: #ddd;
+}
+
+/* MENU LATERAL */
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 230px;
+    height: 100vh;
+    background: #151515;
+    padding: 30px 18px;
+    z-index: 10;
+}
+
+.menu-lateral h2 {
+    color: #d6ad60;
+    font-size: 19px;
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.menu-lateral a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 7px;
+    transition: 0.3s;
+}
+
+.menu-lateral a:hover {
+    background: #d6ad60;
+    color: #151515;
+}
+
+/* CONTENU PRINCIPAL */
+.contenu {
+    margin-left: 230px;
+    padding: 30px;
+}
+
+.bienvenue {
+    margin-bottom: 25px;
+}
+
+.bienvenue h2 {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+/* STATISTIQUES */
+.statistiques {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.statistique {
+    background: #151515;
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    border-bottom: 4px solid #d6ad60;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.statistique h3 {
+    color: #d6ad60;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.statistique p {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+/* SECTIONS */
+section {
+    background: white;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+section h2 {
+    color: #151515;
+    border-left: 5px solid #d6ad60;
+    padding-left: 12px;
+    margin-bottom: 22px;
+}
+
+/* FORMULAIRES */
+label {
+    display: block;
+    margin-top: 14px;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    font-size: 15px;
+    background: #fafafa;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #d6ad60;
+}
+
+/* BOUTONS */
+button {
+    background: #d6ad60;
+    color: #151515;
+    border: none;
+    padding: 12px 18px;
+    margin-top: 15px;
+    border-radius: 7px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #b88c3d;
+    transform: translateY(-2px);
+}
+
+/* CARTES PRODUITS */
+.grille-produits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+}
+
+.carte {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.carte img {
+    width: 100%;
+    height: 190px;
+    object-fit: contain;
+    background: #f7f7f7;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.carte h3 {
+    margin-bottom: 12px;
+    color: #151515;
+}
+
+.carte p {
+    margin: 8px 0;
+}
+
+/* PIED DE PAGE */
+footer {
+    background: #151515;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+/* TELEPHONE */
+@media (max-width: 800px) {
+    .menu-lateral {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .menu-lateral h2 {
+        margin-bottom: 12px;
+    }
+
+    .menu-lateral a {
+        display: inline-block;
+        padding: 10px;
+        margin: 3px;
+    }
+
+    .contenu {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .statistiques {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* PAGE D'ACCUEIL PROFESSIONNELLE */
+
+html {
+    scroll-behavior: smooth;
+}
+
+.entete-site {
+    background: #111;
+    padding: 22px 4%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-bottom: 3px solid #d6ad60;
+}
+
+.logo-boutique h1 {
+    color: white;
+    font-size: 23px;
+    letter-spacing: 2px;
+}
+
+.logo-boutique h1 span {
+    color: #d6ad60;
+}
+
+.logo-boutique p {
+    color: #ccc;
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-top: 6px;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.nav-bouton {
+    display: inline-block;
+    background: #242424;
+    color: white;
+    text-decoration: none;
+    padding: 12px 18px;
+    border: 1px solid #d6ad60;
+    border-radius: 7px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.nav-bouton:hover {
+    background: #d6ad60;
+    color: #111;
+    transform: translateY(-3px);
+}
+
+.bouton-admin {
+    background: #d6ad60;
+    color: #111;
+}
+
+/* GRANDE BANNIERE */
+
+.hero {
+    min-height: 390px;
+    background: linear-gradient(120deg, #111, #383027);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 50px 20px;
+    color: white;
+}
+
+.hero-contenu {
+    max-width: 700px;
+}
+
+.hero h2 {
+    font-size: clamp(32px, 5vw, 52px);
+    color: #d6ad60;
+    margin: 20px 0;
+}
+
+.hero-contenu p {
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.sous-titre {
+    letter-spacing: 3px;
+    color: #d6ad60;
+    font-size: 13px;
+}
+
+.bouton-or {
+    display: inline-block;
+    background: #d6ad60;
+    color: #111;
+    padding: 14px 25px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* AVANTAGES */
+
+.avantages {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 15px;
+    background: white;
+    padding: 25px;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* SECTIONS PRODUITS */
+
+.section-boutique {
+    padding: 55px 5%;
+    background: #f7f6f3;
+    scroll-margin-top: 20px;
+}
+
+.titre-section {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.titre-section p {
+    color: #b88c3d;
+    letter-spacing: 3px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.titre-section h2 {
+    font-size: 30px;
+    margin-top: 10px;
+    color: #171717;
+}
+
+.grille-produits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 25px;
+}
+
+.produit {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+    transition: 0.3s;
+}
+
+.produit:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.produit img {
+    width: 100%;
+    height: 230px;
+    object-fit: contain;
+    padding: 10px;
+    background: #f4f4f4;
+}
+
+.image-vide {
+    height: 230px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eee;
+    color: #777;
+}
+
+.produit-infos {
+    padding: 20px;
+    text-align: center;
+}
+
+.produit-infos h3 {
+    font-size: 19px;
+    margin-bottom: 12px;
+}
+
+.prix {
+    font-size: 21px;
+    font-weight: bold;
+    color: #b88c3d;
+    margin-bottom: 12px;
+}
+
+.disponible {
+    display: block;
+    color: #198754;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.epuise {
+    display: block;
+    color: #dc3545;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+/* COMMANDER WHATSAPP */
+
+.bouton-whatsapp {
+    display: block;
+    background: #25D366;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    padding: 13px 10px;
+    border-radius: 7px;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.bouton-whatsapp:hover {
+    background: #128C7E;
+    transform: scale(1.02);
+}
+
+.aucun-produit {
+    color: #777;
+    text-align: center;
+    padding: 20px;
+}
+
+/* CONTACT */
+
+.contact-boutique {
+    background: #171717;
+    color: white;
+    text-align: center;
+    padding: 55px 20px;
+}
+
+.contact-boutique h2 {
+    color: #d6ad60;
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.contact-boutique p {
+    line-height: 1.8;
+}
+
+/* PIED DE PAGE */
+
+.pied-page {
+    background: #080808;
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+    line-height: 2;
+}
+
+.pied-page h2 {
+    color: #d6ad60;
+}
+
+/* VERSION TELEPHONE */
+
+@media (max-width: 750px) {
+
+    .entete-site {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .navigation {
+        width: 100%;
+    }
+
+    .nav-bouton {
+        padding: 10px 13px;
+        font-size: 13px;
+    }
+
+    .hero {
+        min-height: 320px;
+    }
+
+    .section-boutique {
+        padding: 35px 15px;
+    }
+
+    .grille-produits {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .produit img {
+        height: 160px;
+    }
+
+    .produit-infos {
+        padding: 12px;
+    }
+
+    .bouton-whatsapp {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 380px) {
+    .grille-produits {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =====================================
+   NOUVEAU DESIGN PREMIUM - FALLOU
+   ===================================== */
+
+:root {
+    --or: #d6ad60;
+    --or-fonce: #b88c3d;
+    --noir: #151515;
+    --fond: #f7f5f0;
+    --blanc: #ffffff;
+}
+
+body {
+    background: var(--fond);
+    color: #252525;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* EN-TETE PLUS ELEGANT */
+
+header,
+.entete-site {
+    background: linear-gradient(135deg, #101010, #29231b);
+    border-bottom: 3px solid var(--or);
+}
+
+.entete-site {
+    padding: 25px 5%;
+}
+
+.logo-boutique h1 {
+    font-size: 27px;
+    letter-spacing: 3px;
+}
+
+/* MENU DE NAVIGATION */
+
+.navigation {
+    gap: 12px;
+}
+
+.nav-bouton {
+    border-radius: 30px;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.nav-bouton:hover {
+    box-shadow: 0 5px 15px rgba(214,173,96,0.25);
+}
+
+/* GRANDE BANNIERE */
+
+.hero {
+    background:
+        linear-gradient(120deg, rgba(0,0,0,0.88), rgba(40,32,22,0.85));
+    min-height: 430px;
+}
+
+.hero h2 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.bouton-or {
+    border: 1px solid var(--or);
+    transition: all 0.3s ease;
+}
+
+.bouton-or:hover {
+    background: transparent;
+    color: var(--or);
+    transform: translateY(-3px);
+}
+
+/* AVANTAGES */
+
+.avantages {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+}
+
+.avantages div {
+    padding: 10px;
+}
+
+/* TITRES DES SECTIONS */
+
+.titre-section h2 {
+    font-size: clamp(24px, 4vw, 34px);
+    letter-spacing: 1px;
+}
+
+.titre-section p {
+    letter-spacing: 4px;
+}
+
+/* CARTES PRODUITS */
+
+.produit {
+    border: 1px solid #eee8dc;
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.produit:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+}
+
+.produit img {
+    background: #f1eee8;
+    transition: transform 0.4s ease;
+}
+
+.produit:hover img {
+    transform: scale(1.04);
+}
+
+.produit-infos {
+    padding: 22px 16px;
+}
+
+.produit-infos h3 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.prix {
+    color: var(--or-fonce);
+    font-size: 23px;
+}
+
+/* BOUTONS */
+
+button,
+.bouton-whatsapp {
+    transition: all 0.3s ease;
+}
+
+button {
+    border-radius: 25px;
+}
+
+button:hover {
+    box-shadow: 0 5px 15px rgba(184,140,61,0.25);
+}
+
+.bouton-whatsapp {
+    border-radius: 25px;
+}
+
+/* CONTACT ET PIED DE PAGE */
+
+.contact-boutique {
+    background: linear-gradient(135deg, #151515, #30271b);
+}
+
+.pied-page {
+    border-top: 3px solid var(--or);
+}
+
+/* TABLEAU DE BORD */
+
+.menu-lateral {
+    border-right: 2px solid var(--or);
+}
+
+.menu-lateral a {
+    transition: all 0.3s ease;
+}
+
+.menu-lateral a:hover {
+    padding-left: 20px;
+}
+
+.contenu {
+    background: var(--fond);
+    min-height: 100vh;
+}
+
+.bienvenue {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    border-left: 5px solid var(--or);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.statistique {
+    border-radius: 16px;
+    transition: transform 0.3s ease;
+}
+
+.statistique:hover {
+    transform: translateY(-5px);
+}
+
+section,
+.formulaire-produit {
+    border-radius: 16px;
+}
+
+/* PHOTOS ET FORMULAIRES */
+
+.carte {
+    border-radius: 16px;
+    transition: box-shadow 0.3s ease;
+}
+
+.carte:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+}
+
+input,
+select {
+    border-radius: 9px;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--or);
+    box-shadow: 0 0 0 3px rgba(214,173,96,0.15);
+}
+
+/* ADAPTATION AUX TELEPHONES */
+
+@media (max-width: 750px) {
+
+    .entete-site {
+        padding: 20px 12px;
+    }
+
+    .logo-boutique h1 {
+        font-size: 22px;
+    }
+
+    .navigation {
+        gap: 7px;
+    }
+
+    .nav-bouton {
+        padding: 10px 13px;
+        font-size: 12px;
+    }
+
+    .hero {
+        min-height: 330px;
+        padding: 35px 15px;
+    }
+
+    .hero h2 {
+        font-size: 30px;
+    }
+
+    .produit {
+        border-radius: 12px;
+    }
+
+    .produit img {
+        height: 155px;
+    }
+
+    .produit-infos h3 {
+        font-size: 15px;
+    }
+
+    .prix {
+        font-size: 18px;
+    }
+
+    .menu-lateral {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .contenu {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .statistiques {
+        grid-template-columns: 1fr;
+    }
+
+    .graphique-conteneur {
+        height: 260px;
+    }
+}
