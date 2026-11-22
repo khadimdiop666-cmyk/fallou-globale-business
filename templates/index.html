@@ -4,281 +4,423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FALLOU GOLOBALE BUSNESS</title>
+
+    <title>FALLOU GOLOBALE BUSNESS - Boutique en ligne</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
     <style>
-        .navigation {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f6f2;
+            color: #171717;
+        }
+
+        header {
+            background: #171717;
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+        }
+
+        header h1 {
+            color: #d6ad60;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 14px;
+        }
+
+        nav {
+            background: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a, nav button {
+            color: white;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        nav a:hover, nav button:hover {
+            background: #d6ad60;
+            color: #171717;
+        }
+
+        .accueil {
+            min-height: 300px;
+            background: linear-gradient(135deg, #171717, #393023);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .accueil h2 {
+            font-size: 34px;
+            color: #d6ad60;
+            margin-bottom: 15px;
+        }
+
+        .accueil p {
+            max-width: 650px;
+            line-height: 1.7;
+        }
+
+        .bouton-or {
+            display: inline-block;
+            margin-top: 20px;
+            background: #d6ad60;
+            color: #171717;
+            text-decoration: none;
+            padding: 13px 25px;
+            border-radius: 7px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .bouton-or:hover {
+            background: #f0cc83;
+        }
+
+        .conteneur {
+            width: 92%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .titre-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .titre-section h2 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .titre-section p {
+            color: #666;
+        }
+
+        .recherche {
+            display: block;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .filtres {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 10px;
-            padding: 15px;
+            margin: 20px 0 30px;
         }
 
-        .nav-bouton {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            min-width: 130px;
-            padding: 14px 22px;
-            background: #151515;
-            color: #d6ad60;
-            border: 2px solid #d6ad60;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: 0.3s ease;
+        .filtre {
+            padding: 10px 18px;
+            border: 1px solid #d6ad60;
+            background: white;
+            border-radius: 20px;
             cursor: pointer;
         }
 
-        .nav-bouton:hover {
+        .filtre.actif, .filtre:hover {
             background: #d6ad60;
-            color: #151515;
-            transform: translateY(-3px);
-        }
-
-        .bouton-admin {
-            background: #d6ad60;
-            color: black;
-        }
-
-        .bouton-admin:hover {
-            background: #ffffff;
-            color: black;
-        }
-
-        .accueil {
-            text-align: center;
-            padding: 50px 15px;
-            background: #eee6d8;
-        }
-
-        .recherche {
-            text-align: center;
-            padding: 25px 15px;
-        }
-
-        .recherche input {
-            width: 80%;
-            max-width: 500px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-
-        .section-produits {
-            padding: 30px 20px;
-            text-align: center;
+            color: #171717;
+            font-weight: bold;
         }
 
         .grille-produits {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            max-width: 1100px;
-            margin: auto;
+            gap: 22px;
         }
 
-        .carte-produit {
+        .produit {
             background: white;
-            padding: 15px;
             border-radius: 12px;
-            box-shadow: 0 3px 12px #00000015;
-            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
         }
 
-        .badge-nouveaute {
-            display: inline-block;
-            background: #d6ad60;
-            color: #151515;
-            padding: 7px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin: 5px;
+        .produit:hover {
+            transform: translateY(-5px);
         }
 
-        .badge-promotion {
-            display: inline-block;
-            background: #d62828;
-            color: white;
-            padding: 7px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin: 5px;
-        }
-
-        .carte-produit img {
+        .produit img {
             width: 100%;
-            max-width: 180px;
-            height: 150px;
-            object-fit: contain;
+            height: 230px;
+            object-fit: cover;
             display: block;
-            margin: auto;
-            border-radius: 8px;
-            cursor: zoom-in;
+            background: #eee;
+        }
+
+        .sans-image {
+            height: 230px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #eee;
+            color: #777;
+        }
+
+        .produit-infos {
+            padding: 17px;
+        }
+
+        .produit-infos h3 {
+            margin-bottom: 10px;
+        }
+
+        .categorie-produit {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 10px;
         }
 
         .prix {
-            color: #b58a3a;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .prix-promo {
+            color: #c62828;
         }
 
         .ancien-prix {
             color: #888;
-            font-size: 16px;
             text-decoration: line-through;
-            margin: 8px 0 3px;
+            font-size: 14px;
+            margin-left: 7px;
         }
 
-        .prix-promotion {
-            color: #d62828;
-            font-size: 23px;
-            font-weight: bold;
-            margin: 5px 0 12px;
-        }
-
-        .bouton-whatsapp {
+        .badge {
             display: inline-block;
-            background: #25D366;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .badge-nouveau {
+            background: #d6ad60;
+            color: #171717;
+        }
+
+        .badge-promo {
+            background: #c62828;
             color: white;
-            text-decoration: none;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-top: 10px;
+        }
+
+        .disponibilite {
+            color: green;
+            font-size: 13px;
+            margin: 8px 0;
+        }
+
+        .epuise {
+            color: red;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 8px 0;
         }
 
         .bouton-panier {
-            display: block;
             width: 100%;
+            padding: 12px;
             background: #171717;
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            border-radius: 6px;
+            cursor: pointer;
             margin-top: 10px;
+        }
+
+        .bouton-panier:hover {
+            background: #d6ad60;
+            color: #171717;
+        }
+
+        .bouton-panier:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .panier-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+
+        .article-panier {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .quantite-commandes {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantite-commandes button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: #d6ad60;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
 
-        .bouton-panier:hover {
-            background: #b58a3a;
-            color: black;
-        }
-
-        #panier {
-            background: white;
-            max-width: 850px;
-            margin: 30px auto;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px #00000015;
-        }
-
-        .ligne-panier {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .commandes-quantite {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .commandes-quantite button {
-            border: none;
-            background: #333;
-            color: white;
-            padding: 7px 11px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .bouton-supprimer {
+        .supprimer-article {
             background: #c62828 !important;
+            color: white;
+        }
+
+        .total-panier {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: right;
+            margin: 20px 0;
+        }
+
+        .formulaire-commande {
+            margin-top: 25px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .formulaire-commande input,
+        .formulaire-commande textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .formulaire-commande textarea {
+            min-height: 90px;
+            resize: vertical;
         }
 
         .bouton-commander {
             width: 100%;
-            padding: 15px;
-            background: #25D366;
+            background: #168b46;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 17px;
+            border-radius: 7px;
+            padding: 15px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        #total {
-            font-size: 22px;
-            font-weight: bold;
-            color: #b58a3a;
+        .bouton-commander:hover {
+            background: #106c35;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 7px;
+            display: none;
+        }
+
+        .message.erreur {
+            display: block;
+            background: #ffe3e3;
+            color: #a00000;
+        }
+
+        .message.succes {
+            display: block;
+            background: #e0f5e6;
+            color: #12612b;
+        }
+
+        .contact {
+            background: #171717;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            line-height: 2;
+        }
+
+        .contact h2 {
+            color: #d6ad60;
+            margin-bottom: 15px;
+        }
+
+        .contact a {
+            color: #d6ad60;
+            text-decoration: none;
         }
 
         footer {
-            background: #171717;
+            background: #111;
             color: white;
             text-align: center;
-            padding: 25px;
-            margin-top: 40px;
-        }
-
-        #fenetre-photo {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        #fenetre-photo img {
-            max-width: 90%;
-            max-height: 75vh;
-            object-fit: contain;
-            border-radius: 10px;
-        }
-
-        #fermer-photo {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 35px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        #details-photo {
-            position: absolute;
-            bottom: 25px;
-            color: white;
-            text-align: center;
-            width: 90%;
+            padding: 18px;
+            font-size: 13px;
         }
 
         @media(max-width: 600px) {
-            .ligne-panier {
-                flex-wrap: wrap;
+            .accueil h2 {
+                font-size: 26px;
             }
 
-            .nav-bouton {
-                min-width: 110px;
-                padding: 12px 15px;
+            nav {
+                gap: 4px;
+            }
+
+            nav a, nav button {
+                padding: 9px;
+                font-size: 12px;
+            }
+
+            .article-panier {
+                align-items: flex-start;
             }
         }
     </style>
@@ -286,347 +428,300 @@
 
 <body>
 
-<header id="accueil">
-
-    <div class="logo-boutique">
-        <h1>FALLOU <span>GOLOBALE</span></h1>
-        <p>BUSNESS • MODE & STYLE</p>
-    </div>
-
-    <nav class="navigation">
-        <a href="#accueil" class="nav-bouton">Accueil</a>
-        <a href="#garcons" class="nav-bouton">Garçons</a>
-        <a href="#filles" class="nav-bouton">Filles</a>
-        <a href="#chaussures" class="nav-bouton">Chaussures</a>
-        <a href="{{ url_for('admin') }}" class="nav-bouton bouton-admin">Administration</a>
-        <a href="#panier" class="nav-bouton">🛒 Panier (<span id="nombre-panier">0</span>)</a>
-    </nav>
-
+<header>
+    <h1>FALLOU GOLOBALE BUSNESS</h1>
+    <p>Votre boutique de vêtements et chaussures</p>
 </header>
 
-<section class="accueil">
+<nav>
+    <a href="#accueil">Accueil</a>
+    <a href="#garcons">Garçons</a>
+    <a href="#filles">Filles</a>
+    <a href="#chaussures">Chaussures</a>
+    <a href="{{ url_for('admin') }}">Administration</a>
+    <a href="#panier">🛒 Panier (<span id="nombre-panier">0</span>)</a>
+</nav>
+
+<section class="accueil" id="accueil">
     <h2>Bienvenue chez FALLOU GOLOBALE BUSNESS</h2>
-    <p>Découvrez notre collection de vêtements et chaussures.</p>
+
+    <p>
+        Découvrez notre collection de vêtements et chaussures.
+        Des articles sélectionnés pour vous, à des prix intéressants.
+        Commandez facilement depuis votre téléphone.
+    </p>
+
+    <a href="#boutique" class="bouton-or">Découvrir la boutique</a>
 </section>
 
-<section class="recherche">
-    <h2>Rechercher un produit</h2>
+<main class="conteneur" id="boutique">
+
+    <div class="titre-section">
+        <h2>🛍️ Notre boutique</h2>
+        <p>Découvrez tous nos produits disponibles.</p>
+    </div>
 
     <input
-        type="text"
-        id="rechercheProduit"
-        placeholder="🔍 Rechercher un vêtement ou une chaussure..."
-        oninput="rechercherProduit()"
-    >
+        type="search"
+        id="recherche"
+        class="recherche"
+        placeholder="Rechercher un produit..."
+        oninput="filtrerProduits()">
 
-    <p id="aucun-resultat" style="display:none;color:red;">
-        Aucun produit trouvé.
-    </p>
-</section>
+    <div class="filtres">
+        <button class="filtre actif" onclick="choisirCategorie('tous', this)">
+            Tous les produits
+        </button>
 
-{% for categorie, titre in [
-    ('garcons', 'Mode Garçons'),
-    ('filles', 'Mode Filles'),
-    ('chaussures', 'Nos Chaussures')
-] %}
+        <button class="filtre" onclick="choisirCategorie('garcons', this)">
+            Garçons
+        </button>
 
-<section class="section-produits" id="{{ categorie }}">
+        <button class="filtre" onclick="choisirCategorie('filles', this)">
+            Filles
+        </button>
 
-    <h2>{{ titre }}</h2>
+        <button class="filtre" onclick="choisirCategorie('chaussures', this)">
+            Chaussures
+        </button>
+    </div>
 
-    <div class="grille-produits">
+    <div class="grille-produits" id="liste-produits">
 
-        {% for produit in produits if produit['categorie'] == categorie %}
+        {% for produit in produits %}
 
-        {% set prix_normal = produit['prix']|int %}
-        {% set prix_promo = produit['prix_promo']|int if produit['prix_promo'] else 0 %}
-        {% set en_promotion = prix_promo > 0 and prix_promo < prix_normal %}
-        {% set prix_final = prix_promo if en_promotion else prix_normal %}
+        <article
+            class="produit"
+            data-categorie="{{ produit['categorie'] }}"
+            data-nom="{{ produit['nom']|lower }}">
 
-        <div class="carte-produit"
-             data-recherche="{{ (produit['nom'] ~ ' ' ~ titre)|lower }}">
-
-            {% if produit['nouveaute'] %}
-                <span class="badge-nouveaute">✨ NOUVEAUTÉ</span>
-            {% endif %}
-
-            {% if en_promotion %}
-                <span class="badge-promotion">🔥 PROMOTION</span>
-            {% endif %}
-
-            <img
-                src="{{ url_for('static', filename='images/' ~ (produit['image'] or 'pulls.jpg')) }}"
-                alt="{{ produit['nom'] }}"
-                data-nom="{{ produit['nom'] }}"
-                data-prix="{{ '{:,.0f}'.format(prix_final) }} FCFA"
-                data-statut="{{ produit['statut'] }}"
-                data-fallback-src="{{ url_for('static', filename='images/pulls.jpg') }}"
-                onclick="agrandirDepuisImage(this)"
-                onerror="gererErreurImage(this)"
-            >
-
-            <h3>{{ produit['nom'] }}</h3>
-
-            {% if en_promotion %}
-
-                <p class="ancien-prix">
-                    {{ "{:,.0f}".format(prix_normal) }} FCFA
-                </p>
-
-                <p class="prix-promotion">
-                    {{ "{:,.0f}".format(prix_promo) }} FCFA
-                </p>
-
+            {% if produit["image"] %}
+                <img
+                    src="{{ produit['image'] }}"
+                    alt="{{ produit['nom'] }}"
+                    loading="lazy">
             {% else %}
-
-                <p class="prix">
-                    {{ "{:,.0f}".format(prix_normal) }} FCFA
-                </p>
-
+                <div class="sans-image">
+                    Aucune photo disponible
+                </div>
             {% endif %}
 
-            {% if produit['statut']|lower|trim == 'disponible' and produit['quantite']|int > 0 %}
+            <div class="produit-infos">
 
-                <p style="color:green;font-weight:bold;background:#e5f7e9;padding:8px;border-radius:6px;">
-                    ✓ DISPONIBLE
+                {% if produit["nouveaute"] %}
+                    <span class="badge badge-nouveau">
+                        ✨ NOUVEAUTÉ
+                    </span>
+                {% endif %}
+
+                {% if produit["prix_promo"] and produit["prix_promo"]|int > 0 and produit["prix_promo"]|int < produit["prix"]|int %}
+                    <span class="badge badge-promo">
+                        🔥 PROMOTION
+                    </span>
+                {% endif %}
+
+                <h3>{{ produit["nom"] }}</h3>
+
+                <p class="categorie-produit">
+                    {{ produit["categorie"]|capitalize }}
                 </p>
 
-                <label for="quantite-{{ produit['id'] }}">Quantité :</label>
+                {% if produit["prix_promo"] and produit["prix_promo"]|int > 0 and produit["prix_promo"]|int < produit["prix"]|int %}
 
-                <input
-                    type="number"
-                    id="quantite-{{ produit['id'] }}"
-                    value="1"
-                    min="1"
-                    max="{{ produit['quantite'] }}"
-                    style="width:70px;padding:8px;margin:8px;"
-                >
+                    <p class="prix prix-promo">
+                        {{ "{:,.0f}".format(produit["prix_promo"]|int) }} FCFA
 
-                <button
-                    type="button"
-                    class="bouton-panier"
-                    data-id="{{ produit['id']|int }}"
-                    data-nom="{{ produit['nom'] }}"
-                    data-prix="{{ prix_final }}"
-                    data-stock="{{ produit['quantite']|int }}"
-                    onclick="ajouterDepuisBouton(this)"
-                >
-                    🛒 Ajouter au panier
-                </button>
+                        <span class="ancien-prix">
+                            {{ "{:,.0f}".format(produit["prix"]|int) }} FCFA
+                        </span>
+                    </p>
 
-            {% else %}
+                {% else %}
 
-                <p style="color:red;font-weight:bold;background:#ffe5e5;padding:8px;border-radius:6px;">
-                    ✕ ÉPUISÉ
-                </p>
+                    <p class="prix">
+                        {{ "{:,.0f}".format(produit["prix"]|int) }} FCFA
+                    </p>
 
-            {% endif %}
+                {% endif %}
 
-        </div>
+                {% if produit["quantite"]|int > 0 and produit["statut"]|lower == "disponible" %}
+
+                    <p class="disponibilite">
+                        ✓ Disponible
+                    </p>
+
+                    <button
+                        class="bouton-panier"
+                        onclick="ajouterAuPanier(
+                            {{ produit['id']|tojson }},
+                            {{ produit['nom']|tojson }},
+                            {{ produit['prix']|tojson }},
+                            {{ produit['prix_promo']|default(0)|tojson }},
+                            {{ produit['image']|default('')|tojson }}
+                        )">
+                        Ajouter au panier
+                    </button>
+
+                {% else %}
+
+                    <p class="epuise">Produit épuisé</p>
+
+                    <button class="bouton-panier" disabled>
+                        Indisponible
+                    </button>
+
+                {% endif %}
+
+            </div>
+        </article>
 
         {% else %}
 
-            <p>Aucun produit disponible dans cette catégorie.</p>
+        <p style="text-align:center;grid-column:1/-1;">
+            Aucun produit disponible pour le moment.
+        </p>
 
         {% endfor %}
 
     </div>
 
-</section>
+    <p id="aucun-resultat" style="display:none;text-align:center;margin:25px;">
+        Aucun produit ne correspond à votre recherche.
+    </p>
 
-{% endfor %}
+</main>
 
-<div id="fenetre-photo" onclick="fermerPhoto()">
+<!-- PANIER -->
+<section class="conteneur" id="panier">
 
-    <button id="fermer-photo" type="button" onclick="fermerPhoto()">✕</button>
-
-    <img id="photo-agrandie" src="" alt="Photo du produit" onclick="event.stopPropagation()">
-
-    <div id="details-photo" onclick="event.stopPropagation()"></div>
-
-</div>
-
-<section id="panier">
-
-    <h2>🛒 Mon panier</h2>
-
-    <div id="contenu-panier">
-        <p>Votre panier est vide.</p>
+    <div class="titre-section">
+        <h2>🛒 Mon panier</h2>
+        <p>Vérifiez vos articles avant de commander.</p>
     </div>
 
-    <p>Total : <span id="total">0 FCFA</span></p>
+    <div class="panier-section">
 
-    <h3>Informations du client</h3>
+        <div id="contenu-panier">
+            <p>Votre panier est vide.</p>
+        </div>
 
-    <input
-        type="text"
-        id="nomClient"
-        placeholder="Votre nom complet"
-        required
-        style="width:100%;padding:12px;margin:8px 0;"
-    >
+        <div class="total-panier">
+            Total : <span id="total-panier">0</span> FCFA
+        </div>
 
-    <input
-        type="tel"
-        id="telephoneClient"
-        placeholder="Votre numéro de téléphone"
-        required
-        style="width:100%;padding:12px;margin:8px 0;"
-    >
+        <div id="message-commande" class="message"></div>
 
-    <textarea
-        id="adresseClient"
-        placeholder="Votre adresse de livraison"
-        required
-        style="width:100%;padding:12px;margin:8px 0;"
-    ></textarea>
+        <form class="formulaire-commande" id="formulaire-commande">
 
-    <button
-        type="button"
-        class="bouton-commander"
-        onclick="commanderWhatsApp()"
-    >
-        📲 Envoyer ma commande sur WhatsApp
-    </button>
+            <h3>Informations de livraison</h3>
+
+            <input
+                type="text"
+                id="nom-client"
+                placeholder="Votre nom complet"
+                required>
+
+            <input
+                type="tel"
+                id="telephone-client"
+                placeholder="Votre numéro de téléphone"
+                required>
+
+            <textarea
+                id="adresse-client"
+                placeholder="Votre adresse de livraison"
+                required></textarea>
+
+            <button type="submit" class="bouton-commander">
+                Commander sur WhatsApp
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+
+    <h2>Contactez-nous</h2>
+
+    <p>FALLOU GOLOBALE BUSNESS</p>
+
+    <p>
+        Téléphone / WhatsApp :
+        <a href="https://wa.me/221763368172">
+            +221 76 336 81 72
+        </a>
+    </p>
+
+    <p>Merci de votre confiance !</p>
 
 </section>
 
 <footer>
-    <h3>FALLOU GOLOBALE BUSNESS</h3>
-    <p>Mode, vêtements et chaussures</p>
-    <p>WhatsApp : +221 76 336 81 72</p>
-    <p>© 2026 - Tous droits réservés</p>
+    <p>© 2026 FALLOU GOLOBALE BUSNESS - Tous droits réservés.</p>
 </footer>
 
 <script>
-
-    const numeroWhatsApp = "221763368172";
+    const CLE_PANIER = "panierFallou";
+    const NUMERO_WHATSAPP = "221763368172";
 
     let panier = [];
 
     try {
-        panier = JSON.parse(localStorage.getItem("panierFallou")) || [];
-
-        if (!Array.isArray(panier)) {
-            panier = [];
-        }
-
+        panier = JSON.parse(localStorage.getItem(CLE_PANIER)) || [];
+        if (!Array.isArray(panier)) panier = [];
     } catch (erreur) {
         panier = [];
     }
 
+    let categorieActive = "tous";
+
     function sauvegarderPanier() {
-        localStorage.setItem("panierFallou", JSON.stringify(panier));
+        localStorage.setItem(CLE_PANIER, JSON.stringify(panier));
     }
 
-    function gererErreurImage(image) {
-        if (!image.dataset.fallback && image.dataset.fallbackSrc) {
-            image.dataset.fallback = "1";
-            image.src = image.dataset.fallbackSrc;
-        } else {
-            image.style.display = "none";
-        }
-    }
+    function ajouterAuPanier(id, nom, prix, prixPromo, image) {
 
-    function agrandirDepuisImage(image) {
-        const nom = image.dataset.nom || "";
-        const prix = image.dataset.prix || "";
-        const statut = image.dataset.statut || "";
-        agrandirPhoto(image, nom, prix, statut);
-    }
+        const prixNormal = Number(prix);
+        const promotion = Number(prixPromo) || 0;
 
-    function agrandirPhoto(image, nom, prix, statut) {
+        const prixFinal =
+            promotion > 0 && promotion < prixNormal
+                ? promotion
+                : prixNormal;
 
-        const fenetre = document.getElementById("fenetre-photo");
+        const existant = panier.find(article => Number(article.id) === Number(id));
 
-        document.getElementById("photo-agrandie").src = image.src;
-
-        document.getElementById("details-photo").innerHTML =
-            "<h2>" + echapperHTML(nom) + "</h2>" +
-            "<p>" + echapperHTML(prix) + "</p>" +
-            "<p>" + echapperHTML(statut) + "</p>";
-
-        fenetre.style.display = "flex";
-    }
-
-    function fermerPhoto() {
-        document.getElementById("fenetre-photo").style.display = "none";
-        document.getElementById("photo-agrandie").src = "";
-    }
-
-    document.addEventListener("keydown", function(e) {
-        if (e.key === "Escape") {
-            fermerPhoto();
-        }
-    });
-
-    function ajouterDepuisBouton(bouton) {
-
-        const id = Number(bouton.dataset.id);
-        const nom = bouton.dataset.nom || "";
-        const prix = Number(bouton.dataset.prix);
-        const stock = Number(bouton.dataset.stock);
-
-        const champQuantite = document.getElementById("quantite-" + id);
-
-        if (!champQuantite) {
-            return;
-        }
-
-        const quantite = Number(champQuantite.value);
-
-        const article = panier.find(p => Number(p.id) === id);
-        const quantiteDejaAuPanier = article ? Number(article.quantite) : 0;
-
-        if (!Number.isInteger(quantite) || quantite < 1) {
-            alert("Veuillez choisir une quantité valide.");
-            return;
-        }
-
-        if (quantiteDejaAuPanier + quantite > stock) {
-            alert("Stock insuffisant ! Quantité disponible : " + stock);
-            return;
-        }
-
-        ajouterAuPanier(id, nom, prix, quantite);
-        champQuantite.value = 1;
-    }
-
-    function ajouterAuPanier(id, nom, prix, quantiteChoisie) {
-
-        let article = panier.find(p => Number(p.id) === Number(id));
-
-        if (article) {
-            article.quantite += Number(quantiteChoisie);
-            article.prix = Number(prix);
+        if (existant) {
+            existant.quantite += 1;
         } else {
             panier.push({
                 id: Number(id),
                 nom: nom,
-                prix: Number(prix),
-                quantite: Number(quantiteChoisie)
+                prix: prixFinal,
+                image: image || "",
+                quantite: 1
             });
         }
 
         sauvegarderPanier();
         afficherPanier();
-
-        alert(nom + " ajouté au panier !");
+        afficherMessage("Produit ajouté au panier.", "succes");
     }
 
     function afficherPanier() {
 
         const contenu = document.getElementById("contenu-panier");
-        const totalElement = document.getElementById("total");
-
-        if (!contenu || !totalElement) {
-            return;
-        }
+        const totalElement = document.getElementById("total-panier");
+        const nombreElement = document.getElementById("nombre-panier");
 
         contenu.innerHTML = "";
 
         let total = 0;
-        let nombre = 0;
+        let nombreArticles = 0;
 
         if (panier.length === 0) {
             contenu.innerHTML = "<p>Votre panier est vide.</p>";
@@ -634,87 +729,77 @@
 
         panier.forEach((article, index) => {
 
-            let prix = Number(article.prix) || 0;
-            let quantiteArticle = Number(article.quantite) || 1;
-            let sousTotal = prix * quantiteArticle;
+            const quantite = Number(article.quantite) || 0;
+            const prix = Number(article.prix) || 0;
+            const sousTotal = prix * quantite;
 
             total += sousTotal;
-            nombre += quantiteArticle;
+            nombreArticles += quantite;
 
             const ligne = document.createElement("div");
-            ligne.className = "ligne-panier";
+            ligne.className = "article-panier";
 
-            const details = document.createElement("div");
+            const informations = document.createElement("div");
 
-            details.innerHTML =
-                "<strong>" + echapperHTML(article.nom) + "</strong><br>" +
+            const nom = document.createElement("strong");
+            nom.textContent = article.nom;
+
+            const prixTexte = document.createElement("p");
+            prixTexte.textContent =
                 prix.toLocaleString("fr-FR") + " FCFA l'unité";
 
+            informations.appendChild(nom);
+            informations.appendChild(prixTexte);
+
             const controles = document.createElement("div");
-            controles.className = "commandes-quantite";
+            controles.className = "quantite-commandes";
 
             const moins = document.createElement("button");
-            moins.textContent = "−";
             moins.type = "button";
-            moins.onclick = () => changerQuantite(index, -1);
+            moins.textContent = "−";
+            moins.onclick = () => modifierQuantite(index, -1);
 
-            const quantite = document.createElement("strong");
-            quantite.textContent = quantiteArticle;
+            const quantiteTexte = document.createElement("span");
+            quantiteTexte.textContent = quantite;
 
             const plus = document.createElement("button");
-            plus.textContent = "+";
             plus.type = "button";
-            plus.onclick = () => changerQuantite(index, 1);
+            plus.textContent = "+";
+            plus.onclick = () => modifierQuantite(index, 1);
 
             const supprimer = document.createElement("button");
-            supprimer.textContent = "Supprimer";
             supprimer.type = "button";
-            supprimer.className = "bouton-supprimer";
+            supprimer.textContent = "X";
+            supprimer.className = "supprimer-article";
             supprimer.onclick = () => supprimerArticle(index);
 
-            const sousTotalTexte = document.createElement("span");
+            controles.appendChild(moins);
+            controles.appendChild(quantiteTexte);
+            controles.appendChild(plus);
+            controles.appendChild(supprimer);
 
+            const sousTotalTexte = document.createElement("strong");
             sousTotalTexte.textContent =
                 sousTotal.toLocaleString("fr-FR") + " FCFA";
 
-            controles.append(moins, quantite, plus, supprimer);
-            ligne.append(details, controles, sousTotalTexte);
+            ligne.appendChild(informations);
+            ligne.appendChild(controles);
+            ligne.appendChild(sousTotalTexte);
 
             contenu.appendChild(ligne);
         });
 
-        totalElement.textContent =
-            total.toLocaleString("fr-FR") + " FCFA";
+        totalElement.textContent = total.toLocaleString("fr-FR");
+        nombreElement.textContent = nombreArticles;
 
-        document.getElementById("nombre-panier").textContent = nombre;
+        sauvegarderPanier();
     }
 
-    function changerQuantite(index, variation) {
+    function modifierQuantite(index, changement) {
 
-        if (!panier[index]) {
-            return;
-        }
+        if (!panier[index]) return;
 
-        const id = Number(panier[index].id);
-
-        if (variation > 0) {
-
-            const bouton = document.querySelector(
-                '.bouton-panier[data-id="' + id + '"]'
-            );
-
-            if (bouton) {
-
-                const stock = Number(bouton.dataset.stock);
-
-                if (panier[index].quantite + 1 > stock) {
-                    alert("Stock insuffisant !");
-                    return;
-                }
-            }
-        }
-
-        panier[index].quantite += variation;
+        panier[index].quantite += changement;
 
         if (panier[index].quantite <= 0) {
             panier.splice(index, 1);
@@ -730,152 +815,188 @@
         afficherPanier();
     }
 
-    function echapperHTML(texte) {
-        const element = document.createElement("div");
-        element.textContent = texte;
-        return element.innerHTML;
+    function afficherMessage(texte, type) {
+
+        const message = document.getElementById("message-commande");
+
+        message.textContent = texte;
+        message.className = "message " + type;
+
     }
 
-    async function commanderWhatsApp() {
+    function choisirCategorie(categorie, bouton) {
 
-        if (panier.length === 0) {
-            alert("Votre panier est vide !");
-            return;
-        }
+        categorieActive = categorie;
 
-        const nom = document.getElementById("nomClient").value.trim();
-        const telephone = document.getElementById("telephoneClient").value.trim();
-        const adresse = document.getElementById("adresseClient").value.trim();
+        document.querySelectorAll(".filtre").forEach(element => {
+            element.classList.remove("actif");
+        });
 
-        if (!nom || !telephone || !adresse) {
-            alert("Veuillez remplir toutes les informations du formulaire.");
-            return;
-        }
+        bouton.classList.add("actif");
 
-        const fenetre = window.open("about:blank", "_blank");
-
-        try {
-
-            const reponse = await fetch("/valider-commande", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    client: {
-                        nom: nom,
-                        telephone: telephone,
-                        adresse: adresse
-                    },
-
-                    articles: panier.map(article => ({
-                        id: article.id,
-                        quantite: article.quantite
-                    }))
-
-                })
-
-            });
-
-            const resultat = await reponse.json();
-
-            if (!reponse.ok || !resultat.succes) {
-
-                if (fenetre) {
-                    fenetre.close();
-                }
-
-                alert(resultat.message || "Impossible de valider la commande.");
-                return;
-            }
-
-            let message = "Bonjour FALLOU GOLOBALE BUSNESS !\n\n";
-
-            message += "INFORMATIONS DU CLIENT\n";
-            message += "Nom : " + nom + "\n";
-            message += "Téléphone : " + telephone + "\n";
-            message += "Adresse : " + adresse + "\n\n";
-
-            message += "COMMANDE :\n";
-
-            resultat.articles.forEach(article => {
-
-                const sousTotal = article.prix * article.quantite;
-
-                message += "- " + article.nom +
-                    " | Quantité : " + article.quantite +
-                    " | Prix : " + sousTotal.toLocaleString("fr-FR") +
-                    " FCFA\n";
-
-                if (article.prix_normal && article.prix < article.prix_normal) {
-                    message += "  🔥 Promotion : ancien prix " +
-                        article.prix_normal.toLocaleString("fr-FR") +
-                        " FCFA\n";
-                }
-
-            });
-
-            const total = Number(resultat.total);
-
-            message += "\nTOTAL : " + total.toLocaleString("fr-FR") + " FCFA";
-
-            const url = "https://wa.me/" + numeroWhatsApp +
-                "?text=" + encodeURIComponent(message);
-
-            panier = [];
-
-            sauvegarderPanier();
-            afficherPanier();
-
-            if (fenetre) {
-                fenetre.location.href = url;
-            } else {
-                window.location.href = url;
-            }
-
-        } catch (erreur) {
-
-            if (fenetre) {
-                fenetre.close();
-            }
-
-            alert("Erreur de connexion au serveur. Réessayez.");
-
-        }
+        filtrerProduits();
     }
 
-    function rechercherProduit() {
+    function filtrerProduits() {
 
         const recherche = document
-            .getElementById("rechercheProduit")
-            .value.toLowerCase().trim();
+            .getElementById("recherche")
+            .value
+            .toLowerCase()
+            .trim();
 
-        const cartes = document.querySelectorAll(".carte-produit");
+        const cartes = document.querySelectorAll(".produit");
 
-        let nombreTrouve = 0;
+        let visibles = 0;
 
         cartes.forEach(carte => {
 
-            const texte = carte.dataset.recherche;
+            const categorie = carte.dataset.categorie;
+            const nom = carte.dataset.nom;
 
-            if (texte.includes(recherche)) {
-                carte.style.display = "";
-                nombreTrouve++;
-            } else {
-                carte.style.display = "none";
+            const correspondCategorie =
+                categorieActive === "tous" ||
+                categorie === categorieActive;
+
+            const correspondRecherche =
+                nom.includes(recherche);
+
+            const afficher =
+                correspondCategorie && correspondRecherche;
+
+            carte.style.display = afficher ? "" : "none";
+
+            if (afficher) visibles++;
+        });
+
+        document.getElementById("aucun-resultat").style.display =
+            visibles === 0 ? "block" : "none";
+    }
+
+    document.getElementById("formulaire-commande")
+        .addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+
+            if (panier.length === 0) {
+                afficherMessage("Votre panier est vide.", "erreur");
+                return;
+            }
+
+            const nom = document.getElementById("nom-client").value.trim();
+            const telephone = document.getElementById("telephone-client").value.trim();
+            const adresse = document.getElementById("adresse-client").value.trim();
+
+            if (!nom || !telephone || !adresse) {
+                afficherMessage("Veuillez remplir toutes les informations.", "erreur");
+                return;
+            }
+
+            const bouton = document.querySelector(".bouton-commander");
+
+            bouton.disabled = true;
+            bouton.textContent = "Enregistrement de la commande...";
+
+            try {
+
+                const reponse = await fetch("/valider-commande", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        client: {
+                            nom: nom,
+                            telephone: telephone,
+                            adresse: adresse
+                        },
+
+                        articles: panier.map(article => ({
+                            id: Number(article.id),
+                            quantite: Number(article.quantite)
+                        }))
+
+                    })
+
+                });
+
+                const resultat = await reponse.json();
+
+                if (!reponse.ok || !resultat.succes) {
+                    throw new Error(
+                        resultat.message || "Impossible d'enregistrer la commande."
+                    );
+                }
+
+                const articlesConfirmes = resultat.articles || [];
+
+                let messageWhatsApp =
+                    "Bonjour FALLOU GOLOBALE BUSNESS !\n\n" +
+                    "Je viens de passer une commande.\n\n" +
+                    "Numéro de commande : " + resultat.commande_id + "\n" +
+                    "Nom : " + resultat.client.nom + "\n" +
+                    "Téléphone : " + resultat.client.telephone + "\n" +
+                    "Adresse : " + resultat.client.adresse + "\n\n" +
+                    "MES ARTICLES :\n";
+
+                articlesConfirmes.forEach(article => {
+
+                    messageWhatsApp +=
+                        "- " + article.nom +
+                        " x " + article.quantite +
+                        " = " +
+                        Number(article.sous_total).toLocaleString("fr-FR") +
+                        " FCFA\n";
+
+                });
+
+                messageWhatsApp +=
+                    "\nTOTAL : " +
+                    Number(resultat.total).toLocaleString("fr-FR") +
+                    " FCFA\n\n" +
+                    "Merci !";
+
+                panier = [];
+                sauvegarderPanier();
+                afficherPanier();
+
+                document.getElementById("formulaire-commande").reset();
+
+                afficherMessage(
+                    "Commande enregistrée ! Votre stock a été mis à jour. WhatsApp va s'ouvrir.",
+                    "succes"
+                );
+
+                const lienWhatsApp =
+                    "https://wa.me/" +
+                    NUMERO_WHATSAPP +
+                    "?text=" +
+                    encodeURIComponent(messageWhatsApp);
+
+                window.open(lienWhatsApp, "_blank");
+
+            } catch (erreur) {
+
+                afficherMessage(
+                    erreur.message || "Une erreur est survenue. Réessayez.",
+                    "erreur"
+                );
+
+            } finally {
+
+                bouton.disabled = false;
+                bouton.textContent = "Commander sur WhatsApp";
+
             }
 
         });
 
-        document.getElementById("aucun-resultat").style.display =
-            nombreTrouve === 0 ? "block" : "none";
-    }
-
     afficherPanier();
+    filtrerProduits();
 
 </script>
 
