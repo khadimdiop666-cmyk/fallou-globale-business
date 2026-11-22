@@ -7,6 +7,7 @@ from flask import (
     Flask, render_template, request,
     redirect, url_for, session, jsonify
 )
+
 from supabase import create_client
 import cloudinary
 import cloudinary.uploader
@@ -14,9 +15,9 @@ import cloudinary.uploader
 
 app = Flask(__name__)
 
-# ==================================================
+# =====================================
 # CONFIGURATION
-# ==================================================
+# =====================================
 
 app.secret_key = os.environ.get("SECRET_KEY")
 
@@ -37,9 +38,9 @@ CATEGORIES = ("garcons", "filles", "chaussures")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
 
-# ==================================================
+# =====================================
 # CONNEXION SUPABASE
-# ==================================================
+# =====================================
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
@@ -50,9 +51,9 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-# ==================================================
+# =====================================
 # CONFIGURATION CLOUDINARY
-# ==================================================
+# =====================================
 
 CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME")
 CLOUDINARY_API_KEY = os.environ.get("CLOUDINARY_API_KEY")
@@ -73,9 +74,9 @@ cloudinary.config(
 )
 
 
-# ==================================================
+# =====================================
 # GESTION DES PHOTOS
-# ==================================================
+# =====================================
 
 def photo_autorisee(nom_fichier):
     return (
@@ -86,6 +87,7 @@ def photo_autorisee(nom_fichier):
 
 
 def enregistrer_photo(fichier):
+
     if not fichier or not fichier.filename:
         return None
 
@@ -104,39 +106,46 @@ def enregistrer_photo(fichier):
     return resultat.get("secure_url")
 
 
-# ==================================================
-# OUTILS SUPABASE
-# ==================================================
+# =====================================
+# FONCTIONS SUPABASE
+# =====================================
 
 def recuperer_produits():
+
     resultat = (
         supabase.table("produits")
         .select("*")
         .order("id", desc=True)
         .execute()
     )
+
     return resultat.data or []
 
 
 def recuperer_commandes():
+
     resultat = (
         supabase.table("commandes")
         .select("*")
         .order("id", desc=True)
         .execute()
     )
+
     return resultat.data or []
 
 
 def statut_stock(quantite):
+
     return "Disponible" if int(quantite) > 0 else "Épuisé"
 
 
 def articles_commande(commande):
+
     articles = commande.get("articles", [])
 
     if isinstance(articles, str):
         import json
+
         try:
             articles = json.loads(articles)
         except (ValueError, TypeError):
@@ -145,26 +154,30 @@ def articles_commande(commande):
     return articles if isinstance(articles, list) else []
 
 
-# ==================================================
+# =====================================
 # PROTECTION ADMINISTRATEUR
-# ==================================================
+# =====================================
 
 def admin_requis(fonction):
+
     @wraps(fonction)
     def verification(*args, **kwargs):
+
         if not session.get("admin"):
             return redirect(url_for("admin"))
+
         return fonction(*args, **kwargs)
 
     return verification
 
 
-# ==================================================
-# PAGE D'ACCUEIL
-# ==================================================
+# =====================================
+# PAGE ACCUEIL
+# =====================================
 
 @app.route("/")
 def accueil():
+
     produits = recuperer_produits()
 
     return render_template(
@@ -174,17 +187,23 @@ def accueil():
     )
 
 
-# ==================================================
-# CONNEXION ADMINISTRATEUR
-# ==================================================
+# =====================================
+# CONNEXION ADMIN
+# =====================================
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
+
     if request.method == "POST":
-        mot_de_passe = request.form.get("mot_de_passe", "")
+
+        mot_de_passe = request.form.get(
+            "mot_de_passe", ""
+        )
 
         if mot_de_passe == ADMIN_PASSWORD:
+
             session["admin"] = True
+
             return redirect(url_for("tableau_bord"))
 
         return "Mot de passe incorrect !", 401
@@ -192,36 +211,38 @@ def admin():
     return render_template("admin.html")
 
 
-# ==================================================
-# TABLEAU DE BORD ET STATISTIQUES
-# ==================================================
+# =====================================
+# TABLEAU DE BORD
+# =====================================
 
 @app.route("/tableau-bord")
 @admin_requis
 def tableau_bord():
+
     produits = recuperer_produits()
     commandes = recuperer_commandes()
 
     total_produits = len(produits)
 
     total_stock = sum(
-        int(produit.get("quantite") or 0)
-        for produit in produits
+        int(p.get("quantite") or 0)
+        for p in produits
     )
 
     total_commandes = len(commandes)
 
     chiffre_affaires = sum(
-        int(commande.get("total") or 0)
-        for commande in commandes
+        int(c.get("total") or 0)
+        for c in commandes
     )
 
     nombre_articles_vendus = 0
-
     ventes_par_jour = {}
 
     for commande in commandes:
+
         for article in articles_commande(commande):
+
             try:
                 nombre_articles_vendus += int(
                     article.get("quantite", 0)
@@ -229,31 +250,32 @@ def tableau_bord():
             except (ValueError, TypeError):
                 pass
 
-        try:
-            date = str(commande.get("date_commande", ""))
-            jour = date.split(" à ")[0]
+        date = str(
+            commande.get("date_commande", "")
+        )
 
-            if jour:
-                ventes_par_jour[jour] = (
-                    ventes_par_jour.get(jour, 0)
-                    + int(commande.get("total") or 0)
-                )
-        except (ValueError, TypeError):
-            pass
+        jour = date.split(" à ")[0]
+
+        if jour:
+
+            ventes_par_jour[jour] = (
+                ventes_par_jour.get(jour, 0)
+                + int(commande.get("total") or 0)
+            )
 
     stats_ventes = [
         {"jour": jour, "total": total}
-        for jour, total in ventes_par_jour.items()
-    ][-7:]
+        for jour, total in list(ventes_par_jour.items())[-7:]
+    ]
 
     produits_stock_faible = [
-        produit for produit in produits
-        if 0 < int(produit.get("quantite") or 0) < 5
+        p for p in produits
+        if 0 < int(p.get("quantite") or 0) < 5
     ]
 
     produits_epuises = [
-        produit for produit in produits
-        if int(produit.get("quantite") or 0) == 0
+        p for p in produits
+        if int(p.get("quantite") or 0) == 0
     ]
 
     return render_template(
@@ -270,22 +292,26 @@ def tableau_bord():
     )
 
 
-# ==================================================
+# =====================================
 # HISTORIQUE DES COMMANDES
-# ==================================================
+# =====================================
 
 @app.route("/commandes")
 @admin_requis
 def commandes():
+
     liste_commandes = recuperer_commandes()
 
     commandes_affichees = []
 
     for commande in liste_commandes:
+
         commande_dict = dict(commande)
+
         commande_dict["articles"] = articles_commande(
             commande_dict
         )
+
         commandes_affichees.append(commande_dict)
 
     return render_template(
@@ -294,21 +320,26 @@ def commandes():
     )
 
 
-# ==================================================
+# =====================================
 # AJOUTER UN PRODUIT
-# ==================================================
+# =====================================
 
 @app.route("/ajouter", methods=["POST"])
 @admin_requis
 def ajouter_produit():
+
     nom = request.form.get("nom", "").strip()
     categorie = request.form.get("categorie", "")
     prix = request.form.get("prix", "").strip()
     quantite = request.form.get("quantite", "").strip()
-    prix_promo = request.form.get("prix_promo", "0").strip()
+
+    prix_promo = request.form.get(
+        "prix_promo", "0"
+    ).strip()
 
     nouveaute = (
-        1 if request.form.get("nouveaute") == "1" else 0
+        1 if request.form.get("nouveaute") == "1"
+        else 0
     )
 
     if prix_promo == "":
@@ -335,11 +366,21 @@ def ajouter_produit():
         )
 
     try:
-        image = enregistrer_photo(request.files.get("image"))
+
+        image = enregistrer_photo(
+            request.files.get("image")
+        )
+
     except ValueError as erreur:
+
         return str(erreur), 400
+
     except Exception:
-        app.logger.exception("Erreur pendant l'envoi de la photo")
+
+        app.logger.exception(
+            "Erreur pendant l'envoi de la photo"
+        )
+
         return "Impossible d'envoyer la photo.", 500
 
     nouveau_produit = {
@@ -354,31 +395,40 @@ def ajouter_produit():
     }
 
     try:
+
         supabase.table("produits").insert(
             nouveau_produit
         ).execute()
+
     except Exception:
+
         app.logger.exception("Erreur ajout produit")
+
         return "Impossible d'enregistrer le produit.", 500
 
     return redirect(url_for("tableau_bord"))
 
 
-# ==================================================
+# =====================================
 # MODIFIER UN PRODUIT
-# ==================================================
+# =====================================
 
 @app.route("/modifier/<int:id>", methods=["POST"])
 @admin_requis
 def modifier_produit(id):
+
     nom = request.form.get("nom", "").strip()
     categorie = request.form.get("categorie", "")
     prix = request.form.get("prix", "").strip()
     quantite = request.form.get("quantite", "").strip()
-    prix_promo = request.form.get("prix_promo", "0").strip()
+
+    prix_promo = request.form.get(
+        "prix_promo", "0"
+    ).strip()
 
     nouveaute = (
-        1 if request.form.get("nouveaute") == "1" else 0
+        1 if request.form.get("nouveaute") == "1"
+        else 0
     )
 
     if prix_promo == "":
@@ -405,6 +455,7 @@ def modifier_produit(id):
         )
 
     try:
+
         resultat = (
             supabase.table("produits")
             .select("*")
@@ -417,7 +468,6 @@ def modifier_produit(id):
 
         produit_existant = resultat.data[0]
 
-        # Conserver l'ancienne photo si aucune nouvelle n'est choisie
         image = produit_existant.get("image")
 
         nouvelle_image = enregistrer_photo(
@@ -446,41 +496,52 @@ def modifier_produit(id):
         )
 
     except ValueError as erreur:
+
         return str(erreur), 400
+
     except Exception:
-        app.logger.exception("Erreur modification produit")
+
+        app.logger.exception(
+            "Erreur modification produit"
+        )
+
         return "Impossible de modifier le produit.", 500
 
     return redirect(url_for("tableau_bord"))
 
 
-# ==================================================
+# =====================================
 # SUPPRIMER UN PRODUIT
-# ==================================================
+# =====================================
 
 @app.route("/supprimer/<int:id>", methods=["POST"])
 @admin_requis
 def supprimer_produit(id):
+
     try:
-        (
-            supabase.table("produits")
-            .delete()
-            .eq("id", id)
-            .execute()
-        )
+
+        supabase.table("produits").delete().eq(
+            "id", id
+        ).execute()
+
     except Exception:
-        app.logger.exception("Erreur suppression produit")
+
+        app.logger.exception(
+            "Erreur suppression produit"
+        )
+
         return "Impossible de supprimer le produit.", 500
 
     return redirect(url_for("tableau_bord"))
 
 
-# ==================================================
+# =====================================
 # VALIDER UNE COMMANDE
-# ==================================================
+# =====================================
 
 @app.route("/valider-commande", methods=["POST"])
 def valider_commande():
+
     donnees = request.get_json(silent=True)
 
     if (
@@ -500,9 +561,17 @@ def valider_commande():
             "message": "Informations du client invalides."
         }), 400
 
-    nom_client = str(client.get("nom", "")).strip()
-    telephone = str(client.get("telephone", "")).strip()
-    adresse = str(client.get("adresse", "")).strip()
+    nom_client = str(
+        client.get("nom", "")
+    ).strip()
+
+    telephone = str(
+        client.get("telephone", "")
+    ).strip()
+
+    adresse = str(
+        client.get("adresse", "")
+    ).strip()
 
     if not nom_client or not telephone or not adresse:
         return jsonify({
@@ -520,23 +589,34 @@ def valider_commande():
             "message": "Votre panier est vide."
         }), 400
 
-    # Vérifier les identifiants et quantités
-    articles_valides = []
+    # REGROUPER LES QUANTITES DES PRODUITS IDENTIQUES
+
+    quantites = {}
 
     try:
+
         for article in articles:
+
             produit_id = int(article["id"])
             quantite = int(article["quantite"])
 
             if produit_id <= 0 or quantite <= 0:
                 raise ValueError()
 
-            articles_valides.append({
+            quantites[produit_id] = (
+                quantites.get(produit_id, 0) + quantite
+            )
+
+        articles_valides = [
+            {
                 "id": produit_id,
                 "quantite": quantite
-            })
+            }
+            for produit_id, quantite in quantites.items()
+        ]
 
     except (KeyError, TypeError, ValueError):
+
         return jsonify({
             "succes": False,
             "message": "Informations de commande invalides."
@@ -547,6 +627,7 @@ def valider_commande():
     )
 
     try:
+
         resultat = supabase.rpc(
             "valider_commande",
             {
@@ -561,6 +642,7 @@ def valider_commande():
         donnees_resultat = resultat.data
 
         if isinstance(donnees_resultat, list):
+
             donnees_resultat = donnees_resultat[0]
 
         if not isinstance(donnees_resultat, dict):
@@ -580,7 +662,10 @@ def valider_commande():
         })
 
     except Exception:
-        app.logger.exception("Erreur validation commande")
+
+        app.logger.exception(
+            "Erreur validation commande"
+        )
 
         return jsonify({
             "succes": False,
@@ -591,31 +676,38 @@ def valider_commande():
         }), 400
 
 
-# ==================================================
-# FICHIER TROP VOLUMINEUX
-# ==================================================
+# =====================================
+# GESTION DES FICHIERS TROP VOLUMINEUX
+# =====================================
 
 @app.errorhandler(413)
 def fichier_trop_volumineux(erreur):
-    return "La photo est trop volumineuse. Maximum : 5 Mo.", 413
+
+    return (
+        "La photo est trop volumineuse. Maximum : 5 Mo.",
+        413
+    )
 
 
-# ==================================================
+# =====================================
 # DECONNEXION
-# ==================================================
+# =====================================
 
 @app.route("/deconnexion")
 @admin_requis
 def deconnexion():
+
     session.clear()
+
     return redirect(url_for("admin"))
 
 
-# ==================================================
-# LANCEMENT LOCAL
-# ==================================================
+# =====================================
+# LANCEMENT
+# =====================================
 
 if __name__ == "__main__":
+
     app.run(
         host="0.0.0.0",
         port=5000,
